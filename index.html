@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Hotel Receptie Checklist</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .task-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .task-item {
+      margin: 5px 0;
+    }
+    .task-item button {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hotel Receptie Checklist</h1>
+  <ul id="checklist" class="task-list">
+    <li class="task-item">Controleer reserveringen</li>
+    <li class="task-item">Controleer beschikbaarheid kamers</li>
+    <!-- Voeg hier meer standaard taken toe -->
+  </ul>
+  
+  <h2>Nieuwe Taak Toevoegen</h2>
+  <label for="taskDescription">Taakomschrijving:</label>
+  <input type="text" id="taskDescription" placeholder="Voer taakomschrijving in">
+  <label for="taskDay">Dagnummer:</label>
+  <input type="number" id="taskDay" min="1" max="7" placeholder="Voer dagnummer in">
+  <button onclick="addTask()">Taak Toevoegen</button>
+  
+  <h2>Toegevoegde Taken</h2>
+  <ul id="addedTasks" class="task-list"></ul>
+  
+  <script>
+    let addedTasks = {};
+
+    function addTask() {
+      const taskDescription = document.getElementById('taskDescription').value;
+      const taskDay = document.getElementById('taskDay').value;
+
+      if (!taskDescription || !taskDay) {
+        alert('Vul zowel taakomschrijving als dagnummer in.');
+        return;
+      }
+
+      const taskItem = document.createElement('li');
+      taskItem.className = 'task-item';
+      taskItem.textContent = `Dag ${taskDay}: ${taskDescription}`;
+      const removeButton = document.createElement('button');
+      removeButton.textContent = 'Verwijderen';
+      removeButton.onclick = () => removeTask(taskItem, taskDay, taskDescription);
+      taskItem.appendChild(removeButton);
+      document.getElementById('addedTasks').appendChild(taskItem);
+
+      if (!addedTasks[taskDay]) {
+        addedTasks[taskDay] = [];
+      }
+      addedTasks[taskDay].push({ description: taskDescription, element: taskItem });
+
+      document.getElementById('taskDescription').value = '';
+      document.getElementById('taskDay').value = '';
+    }
+
+    function removeTask(taskItem, taskDay, taskDescription) {
+      document.getElementById('addedTasks').removeChild(taskItem);
+
+      const taskIndex = addedTasks[taskDay].findIndex(task => task.description === taskDescription);
+      if (taskIndex > -1) {
+        addedTasks[taskDay].splice(taskIndex, 1);
+        if (addedTasks[taskDay].length === 0) {
+          delete addedTasks[taskDay];
+        }
+      }
+    }
+  </script>
+</body>
+</html>
